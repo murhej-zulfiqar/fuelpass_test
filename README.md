@@ -1,3 +1,4 @@
+
 ## Overview
 This is the description of the test for Fuelpass
 The goal is to build an API to handle fuel requests at the airports.
@@ -86,13 +87,15 @@ I provided a docker compose file and docker file for each project so you can run
 
  `git clone https://github.com/murhej-zulfiqar/fuelpass_test.git`
 
- 2. open the folder that is cloned from git and in CMD execute the following command 
+2. If you use docker you don't have to change anything in `application.properties`, connection string - username-password will be passed as env variables from docker compose
+ 3. open the folder that is cloned from git and in CMD execute the following command 
+ 
  
  `docker compose -f fuelpass.yml up -d`
 
 
- 3. this command will create container for the DB, Backend and Frontend 
- 4. if everything is working fine you can test the UI and the API
+ 4. this command will create container for the DB, Backend and Frontend 
+ 5. if everything is working fine you can test the UI and the API
  
  The API server will run on port `8080`
 T he UI server will run on port `3000` 
@@ -111,7 +114,10 @@ Operations Manager `username: operation_manager1@fuelpass.com / password: Manage
 You can use those users to login and explore the pages and consume the APIs.
 
 ###Note 
-I didn't add the uint test for the projects because I ran out of time to add proper unit test 
+I didn't add the uint test for the projects because I ran out of time to add proper unit test with good coverage
+
+###Note 
+I didn't use the lombok packager because I faced some compatibility issues and It didn't work properly
 
 ### USE of AI
 I used the AI to debug some issues I faced while implementing the features, also AI helped me with the configuration of applications, gave me a snippet code for the JWT authentication.
