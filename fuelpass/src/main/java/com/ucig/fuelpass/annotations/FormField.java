@@ -1,13 +1,15 @@
 package com.ucig.fuelpass.annotations;
 
-import com.ucig.fuelpass.Enums.FieldType;
+import com.ucig.fuelpass.enums.FieldType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
 
+/**
+ * An annotation object to represent if the field is a form field or not
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FormField {

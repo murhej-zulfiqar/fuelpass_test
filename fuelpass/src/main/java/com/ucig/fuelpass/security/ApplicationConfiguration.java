@@ -1,5 +1,4 @@
 package com.ucig.fuelpass.security;
-import com.ucig.fuelpass.Models.User;
 import com.ucig.fuelpass.repositories.UserRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Optional;
-
+/**
+ * A class to support the authentication
+ */
 @Configuration
 public class ApplicationConfiguration {
     private final UserRepo userRepo;
@@ -40,10 +40,8 @@ public class ApplicationConfiguration {
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 }

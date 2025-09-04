@@ -1,3 +1,5 @@
+// contains the functions that represents the api
+
 import {AxiosResponse} from "axios";
 import axios from "@/api/instance"
 import {User, LoginRequest} from "@/interfaces/users";

@@ -1,10 +1,10 @@
 import {FieldType, OrderStatus} from "@/constants";
 import {User} from "@/interfaces/users";
-import {BasicRow} from "@/components/molecules/Table";
+import { DataRow} from "@/interfaces/common";
 
 export type OrderStatusKeys = keyof typeof OrderStatus;
 
-export interface OrderBasicInfo  {
+export interface OrderBasicInfo  extends DataRow {
     icao: string,
     tailNumber: string,
     startDate: number,
@@ -12,12 +12,12 @@ export interface OrderBasicInfo  {
     requestedVolume:  number
 }
 
-export interface Order extends  OrderBasicInfo, BasicRow{
+export interface Order extends  OrderBasicInfo, DataRow{
     id: string,
     createdAt: number,
     updatedAt: number,
     status: OrderStatusKeys,
-    createdBy: Omit<User,"password" | "token">,
+    user: Omit<User,"password" | "token">,
 }
 
 export type UpdateOrderRequest = {

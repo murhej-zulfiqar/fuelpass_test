@@ -9,7 +9,7 @@ import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 interface Props {
     children: ReactNode;
 }
-
+// A wrapper for applying the theme by material UI
 export default function Provider({ children }: Props) {
     return (
         <AppRouterCacheProvider>

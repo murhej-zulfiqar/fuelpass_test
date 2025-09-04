@@ -1,6 +1,6 @@
 package com.ucig.fuelpass.repositories;
 
-import com.ucig.fuelpass.Models.Order;
+import com.ucig.fuelpass.models.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

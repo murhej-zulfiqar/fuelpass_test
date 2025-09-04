@@ -1,6 +1,6 @@
 package com.ucig.fuelpass.services;
 
-import com.ucig.fuelpass.Models.User;
+import com.ucig.fuelpass.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+/**
+ * A service to generate the JWT token and add the required fields to the token
+ * also check the expireation of the token
+ */
 @Service
 public class JwtService {
     @Value("${security.jwt.secret-key}")
@@ -36,8 +40,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> extraClaims =  new HashMap<>();
         extraClaims.put("id", ((User) userDetails).getId());
-        extraClaims.put("role", ((User) userDetails).getRole().getCanonicalName());
-
+        extraClaims.put("role", ((User) userDetails).getRole());
         return generateToken(extraClaims, userDetails);
     }
 

@@ -1,44 +1,55 @@
 "use client"
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
 import EnhancedTable from "@/components/molecules/Table";
 import {Order} from "@/interfaces/orders";
 import {OrderTableColumns} from "@/components/organisms/Orders/columns";
 import {useAuth} from "@/hooks/useAuth";
+import {useOrders, useUpdateOrder} from "@/hooks/orderHooks";
+import {Box} from "@mui/material";
+import {getTableActions} from "@/components/organisms/Orders/actions";
+import {BasicRoles, OrderStatus} from "@/constants";
+import {orderTableFilters} from "@/components/organisms/Orders/filters";
+import SkeletonLoader from "@/components/molecules/SkeletonLoader";
+import {showToast} from "@/utils/toasts";
 
-const data: Order[] =[
-    {
-        icao: 'DXB',
-        status: "PENDING",
-        id: "",
-        createdAt: 1234,
-        createdBy: {username: "", id: "", role: ""},
-        endDate: 13213,
-        startDate: 12313,
-        requestedVolume: 23,
-        tailNumber: "12313",
-        updatedAt: 12313,
-    },
-    {
-        icao: 'DAM',
-        status: "COMPLETED",
-        id: "",
-        createdAt: 1234,
-        createdBy: {username: "", id: "", role: ""},
-        endDate: 13213,
-        startDate: 12313,
-        requestedVolume: 23,
-        tailNumber: "12313",
-        updatedAt: 12313,
-    }
-
-    ]
+/**
+ * A component to render the data retrieved from the backend
+ * and handle update order status
+ * @constructor
+ */
 export default function Orders() {
-    useAuth("operations_manager");
+    useAuth(BasicRoles.OPERATIONS_MANAGER);
+
+    const {data, isError, isLoading, error} = useOrders();
+
+    const updateOrder = useUpdateOrder()
+
+    const updateOrderStatusCallback = ({id, status}:Order) => {
+
+        switch (status) {
+            case OrderStatus.PENDING:
+                updateOrder.mutate({id, status: "CONFIRMED"})
+                break
+            case OrderStatus.CONFIRMED:
+                updateOrder.mutate({id, status: "COMPLETED"})
+                break
+        }
+    }
+    if((isLoading || updateOrder.isPending))
+        return <SkeletonLoader />
+    if (isError) {
+        const message = error.message || "Failed to retrieve orders";
+        showToast(message,"error");
+        console.error(error)
+        return null;
+    }
     return (
-        <Paper sx={{ height: 400, width: '100%' }}>
-            <EnhancedTable data={data} columns={OrderTableColumns} actions={[]} tableTitle="Orders" sortable />
-        </Paper>
+        <Box sx={{height: 400, width: '100%'}}>
+            {/* eslint-disable-next-line */}
+            {/* @ts-ignore */}
+            {!isLoading && !isError && data && <EnhancedTable data={data.data} filters={orderTableFilters } columns={OrderTableColumns} actions={
+                    () => getTableActions(updateOrderStatusCallback) } tableTitle="Orders" sortable/>}
+        </Box>
     );
 }
 

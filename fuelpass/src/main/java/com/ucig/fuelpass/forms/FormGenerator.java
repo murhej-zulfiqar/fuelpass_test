@@ -1,14 +1,20 @@
-package com.ucig.fuelpass.Forms;
+package com.ucig.fuelpass.forms;
 
-import com.fasterxml.jackson.databind.util.Annotations;
-import com.ucig.fuelpass.Models.DataModel;
 import com.ucig.fuelpass.annotations.FormField;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class FormGenerator {
+
+    /**
+     * a method to generate the form depending on the passed model
+     * loop over the fields of the model and check for each field if the FormField Annotation
+     * using the Annotation we can get the required info for the form field and the validation
+     *
+     * @param model
+     * @return
+     */
     public List<Map<String, Object>> generateForm(Class<?> model){
         List<Map<String, Object>> generatedFields = new ArrayList<>();
         Field []fields = model.getDeclaredFields();

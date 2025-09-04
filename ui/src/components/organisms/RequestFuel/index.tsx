@@ -4,74 +4,39 @@ import {generateValidationSchema} from "@/components/molecules/FormBuilder/valid
 import {useOrder, useRequestForm} from "@/hooks/orderHooks";
 import {FormikValues} from "formik";
 import {useAuth} from "@/hooks/useAuth";
-import {useEffect} from "react";
+import {BasicRoles} from "@/constants";
+import {OrderBasicInfo} from "@/interfaces/orders";
+import * as React from "react";
+import SkeletonLoader from "@/components/molecules/SkeletonLoader";
+import {showToast} from "@/utils/toasts";
 
-const form  = [
-    {
-        fieldLabel: 'Airport ICAO',
-        fieldType: 'string',
-        validation: {
-            required: true,
-            maxLength: 4,
-        },
-        fieldName: 'icao',
-    },
-    {
-        fieldLabel: 'Tail Number',
-        fieldType: 'string',
-        validation: {
-            required: true,
-        },
-        fieldName: 'tailNumber',
-    },
-    {
-        fieldLabel: 'Requested Volume',
-        fieldType: 'number',
-        validation: {
-            required: true,
-            minValue: 0,
-            maxValue: 100,
-        },
-        fieldName: "requestedVolume",
-    },
-    {
-        fieldLabel: 'Request From',
-        fieldType: 'date',
-        validation: {
-            required: true,
-        },
-        fieldName: 'startDate',
-    },
-    {
-        fieldLabel: 'Expires At',
-        fieldType: 'date',
-        validation: {
-            required: true,
-        },
-        fieldName: 'endDate',
-    }
-]
-const RequestFuel: React.FC = ({}) => {
+/**
+ * A component to render the form for requesting fuel
+ * @constructor
+ */
+const RequestFuel: React.FC = () => {
 
-   useAuth("operation_manager")
+   useAuth(BasicRoles.AIRCRAFT_OPERATOR)
 
     const order =  useOrder()
     const requestForm = useRequestForm()
-    if(requestForm.isLoading)
-        return null
+    if(requestForm.isLoading || order.isPending) {
+        return  <SkeletonLoader />
+    }
 
-    if(requestForm.isError)
+    if(requestForm.isError) {
+        const message = requestForm.error.message || "Failed to update order";
+        showToast(message,"error");
+        console.error(requestForm.error)
         return null
-    if(requestForm.isSuccess && requestForm.data !== undefined && requestForm.data.data !== undefined){
-        console.log("sdasdad ", requestForm.data.data)
+    }
+
+
+    if(requestForm.isSuccess && requestForm.data !== undefined){
         const validationSchema = generateValidationSchema(requestForm.data.data || [])
-
-
         const submitRequest =  (values: FormikValues) => {
-            order.mutate(values)
-
+            order.mutate(values as OrderBasicInfo)
         }
-
         return <FormBuilder formObject={requestForm.data.data || []} onSubmit={submitRequest} formTitle='Request Fuel' validationSchema={validationSchema}/>
     }
     return null

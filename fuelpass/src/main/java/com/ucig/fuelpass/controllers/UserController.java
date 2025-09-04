@@ -1,19 +1,16 @@
-package com.ucig.fuelpass.Controllers;
+package com.ucig.fuelpass.controllers;
 
-import com.ucig.fuelpass.Forms.FormGenerator;
-import com.ucig.fuelpass.Models.Order;
-import com.ucig.fuelpass.Models.User;
-import com.ucig.fuelpass.Requests.LoginRequest;
-import com.ucig.fuelpass.Responses.LoginResponse;
+import com.ucig.fuelpass.exceptions.NotFoundException;
+import com.ucig.fuelpass.exceptions.UnAuthorizedException;
+import com.ucig.fuelpass.models.User;
+import com.ucig.fuelpass.requests.LoginRequest;
+import com.ucig.fuelpass.responses.ErrorResponse;
+import com.ucig.fuelpass.responses.LoginResponse;
 import com.ucig.fuelpass.services.AuthenticationService;
 import com.ucig.fuelpass.services.JwtService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -28,8 +25,8 @@ public class UserController {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
     }
-    // todo add full authentication functionality
     @PostMapping("/login")
+    @ResponseBody
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
 
         User authenticatedUser = authenticationService.authenticate(loginRequest);
@@ -41,6 +38,4 @@ public class UserController {
         return ResponseEntity.ok(loginResponse);
 
     }
-
-
 }

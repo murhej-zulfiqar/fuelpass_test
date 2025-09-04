@@ -1,9 +1,7 @@
-package com.ucig.fuelpass.Models;
+package com.ucig.fuelpass.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,9 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "users")
-@NoArgsConstructor
 public class User implements UserDetails, DataModel {
     @Id
     @GeneratedValue(generator = "uuid1")
@@ -28,6 +24,17 @@ public class User implements UserDetails, DataModel {
     @OneToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    public User(String password, String username, Long created_at, Role role) {
+        this.password = password;
+        this.username = username;
+        this.created_at = created_at;
+        this.role = role;
+    }
+
+    public User(){
+
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -109,4 +116,6 @@ public class User implements UserDetails, DataModel {
     public void setRole(Role role) {
         this.role = role;
     }
+
+
 }

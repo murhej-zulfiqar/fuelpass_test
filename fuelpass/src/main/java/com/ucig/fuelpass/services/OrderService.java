@@ -1,17 +1,17 @@
 package com.ucig.fuelpass.services;
 
-import com.ucig.fuelpass.Enums.OrderStatus;
-import com.ucig.fuelpass.Models.Order;
-import com.ucig.fuelpass.Models.User;
-import com.ucig.fuelpass.Requests.CreateOrderRequest;
-import com.ucig.fuelpass.Requests.OrderStatusRequest;
+import com.ucig.fuelpass.dtos.OrderDTO;
+import com.ucig.fuelpass.enums.OrderStatus;
+import com.ucig.fuelpass.exceptions.InternalErrorException;
+import com.ucig.fuelpass.exceptions.NotFoundException;
+import com.ucig.fuelpass.models.Order;
+import com.ucig.fuelpass.models.User;
+import com.ucig.fuelpass.requests.CreateOrderRequest;
+import com.ucig.fuelpass.requests.OrderStatusRequest;
 import com.ucig.fuelpass.repositories.OrderRepo;
 import com.ucig.fuelpass.repositories.UserRepo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,38 +26,54 @@ public class OrderService {
         this.orderRepo = orderRepo;
         this.userRepo =  userRepo;
     }
-    public Order createOrder(CreateOrderRequest createOrderRequest){
+    public Order createOrder(CreateOrderRequest createOrderRequest, User user){
 
-        UUID uuid = UUID.fromString("363543e3-f587-4d65-9aaa-e805b5da3acf");
-        System.out.println(uuid);
         try {
-            User u = userRepo.findById(UUID.fromString("363543e3-f587-4d65-9aaa-e805b5da3acf")).get();
             Order order = new Order();
             order.setIcao(createOrderRequest.getIcao());
             order.setTailNumber(createOrderRequest.getTailNumber());
             order.setRequestedVolume(createOrderRequest.getRequestedVolume());
             order.setStartDate(createOrderRequest.getStartDate());
+            order.setCreatedAt(System.currentTimeMillis());
+            order.setUpdatedAt(System.currentTimeMillis());
             order.setEndDate(createOrderRequest.getEndDate());
             order.setStatus(OrderStatus.PENDING.toString());
-            order.setUser(u);
+            order.setUser(user);
 
             order = orderRepo.save(order);
             return order;
         }catch (Exception e){
             e.printStackTrace();
-            return null;
+            throw new InternalErrorException("Failed to create order");
         }
     }
 
-    public List<Order> getOrders(){
-        return orderRepo.findAll();
+    public List<OrderDTO> getOrders(){
+        try {
+            List<Order> orders = orderRepo.findAll();
+            return orders.stream().map(order -> new OrderDTO(order.getId(), order.getIcao(), order.getTailNumber(), order.getRequestedVolume(), order.getStatus(), order.getStartDate(),
+                    order.getCreatedAt(), order.getUpdatedAt(), order.getEndDate(), order.getUser())).toList();
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new InternalErrorException("Failed to retrieve the orders");
+        }
     }
 
-    public Order updateOrderStatus(UUID orderId, OrderStatusRequest orderStatusRequest){
-        Order order =  orderRepo.getReferenceById(orderId);
-        order.setStatus(orderStatusRequest.getStatus());
-        orderRepo.save(order);
-        return order;
+    public OrderDTO updateOrderStatus(String orderId, OrderStatusRequest orderStatusRequest, User user){
+        try {
+            Order order = orderRepo.getReferenceById(UUID.fromString(orderId));
+            if(!order.getStatus().equals(orderStatusRequest.getStatus())) {
+                order.setStatus(orderStatusRequest.getStatus());
+                order.setUpdatedAt(System.currentTimeMillis());
+                order.setUser(user);
+                orderRepo.save(order);
+            }
+            return new OrderDTO(order.getId(), order.getIcao(), order.getTailNumber(), order.getRequestedVolume(), order.getStatus(), order.getStartDate(),
+                    order.getCreatedAt(), order.getUpdatedAt(), order.getEndDate(), order.getUser());
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new NotFoundException("Could not find the order");
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ucig.fuelpass.Requests;
+package com.ucig.fuelpass.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

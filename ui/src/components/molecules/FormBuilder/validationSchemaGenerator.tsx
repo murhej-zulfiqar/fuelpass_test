@@ -2,6 +2,11 @@ import * as Yup from 'yup';
 import {FormObject} from "@/interfaces/common";
 import {FieldType} from "@/constants";
 
+/**
+ * A function to generate the validation schema for the form depending on the json object
+ *
+ * @param formObjects
+ */
 export const generateValidationSchema =  (formObjects: FormObject[]) => {
     const shape: Record<string, Yup.StringSchema | Yup.NumberSchema> =  {}
     formObjects.forEach((formObject) => {
@@ -14,15 +19,30 @@ export const generateValidationSchema =  (formObjects: FormObject[]) => {
                 validator = Yup.string()
         }
         Object.keys(formObject.validation).forEach((validation) => {
-            if(validation === "minLength" || validation === "minValue"){
-                validator = validator.min(formObject.validation[validation] as number, "Min value ")
+
+            switch (validation) {
+                case "length":
+                    if(validator instanceof Yup.StringSchema)
+                        validator = validator.transform(value => value?.trim()).length(parseInt(formObject.validation[validation]?.toString() as string, 10) , `${formObject.fieldLabel} must contains ${formObject.validation[validation]} characters`)
+                    break;
+                case "minLength":
+                    if(validator instanceof Yup.StringSchema)
+                        validator = validator.min(parseInt(formObject.validation[validation]?.toString() as string, 10) , `${formObject.fieldLabel} must contains at least ${formObject.validation[validation]} characters`)
+                    break;
+                case "maxLength":
+                    if(validator instanceof Yup.StringSchema)
+                        validator = validator.max(parseInt(formObject.validation[validation]?.toString() as string, 10) , `${formObject.fieldLabel} must contains at most ${formObject.validation[validation]} characters`)
+                    break;
+                case "minValue":
+                    validator = validator.min(parseInt(formObject.validation[validation]?.toString() as string, 10) , `${formObject.fieldLabel} minimum value is ${formObject.validation[validation]}`)
+                    break;
+                case "maxValue":
+                    validator = validator.max(parseInt(formObject.validation[validation]?.toString() as string, 10) , `${formObject.fieldLabel} maximum value is ${formObject.validation[validation]}`)
+                    break;
             }
-            else if(validation === "maxLength" ||  validation === "maxValue"){
-                validator = validator.max(formObject.validation[validation] as number, "Max value ")
-            }
-            else if(validation === "required"){
+            if(validation === "required"){
                 if(formObject.validation[validation]){
-                    validator = validator.required("This field is required")
+                    validator = validator.required(`${formObject.fieldLabel} is required`)
                 }
             }
 

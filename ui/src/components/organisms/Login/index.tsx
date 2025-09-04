@@ -1,6 +1,6 @@
 "use client"
 import {Form, Formik, FormikProps, FormikValues} from "formik";
-import {CircularProgress, FormControl, Grid, TextField} from "@mui/material";
+import {CircularProgress, Grid, TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import * as React from "react";
@@ -27,32 +27,37 @@ const Login: React.FC = () => {
 
         }}>
             <Paper sx={{padding: 4}} elevation={3}>
-            <Typography variant="h3" fontWeight="bold" sx={{textAlign: "center", marginBottom: 2, }}>Welcome to Fuelpass</Typography>
+                <Typography variant="h3" fontWeight="bold" sx={{textAlign: "center", marginBottom: 2,}}>Welcome to
+                    Fuelpass</Typography>
                 {
                     login.isPending ?
                         <Grid container justifyContent="center" spacing={2}>
-                            <CircularProgress size={50} />
+                            <CircularProgress size={50}/>
                         </Grid>
                         :
                         <Formik initialValues={initialValues} onSubmit={(values) => {
                             login.mutate(values as LoginRequest)
                         }}
                                 validationSchema={loginValidationSchema()}>
-                            {(formik: FormikProps<FormikValues>)=> (
+                            {(formik: FormikProps<FormikValues>) => (
                                 <Form>
                                     <Grid container spacing={3} justifyContent="center" alignItems="center">
                                         <Grid size={12}>
-                                            <TextField label="Username"  fullWidth variant="outlined" name="username" onChange={formik.handleChange}
+                                            <TextField label="Username" fullWidth variant="outlined" name="username"
+                                                       onChange={formik.handleChange}
                                                        error={formik.errors.username !== undefined}
                                                        helperText={formik.errors?.username as string}/>
                                         </Grid>
                                         <Grid size={12}>
-                                            <TextField label="Password" fullWidth variant="outlined" name="password" type="password"
-                                                       onChange={formik.handleChange} error={formik.errors?.password !== undefined}
+                                            <TextField label="Password" fullWidth variant="outlined" name="password"
+                                                       type="password"
+                                                       onChange={formik.handleChange}
+                                                       error={formik.errors?.password !== undefined}
                                                        helperText={formik.errors?.password as string}/>
                                         </Grid>
                                         <Grid size={8}>
-                                            <Button fullWidth variant="contained" type="submit" disabled={login.isPending}>Login</Button>
+                                            <Button fullWidth variant="contained" type="submit"
+                                                    disabled={login.isPending}>Login</Button>
                                         </Grid>
                                     </Grid>
                                 </Form>

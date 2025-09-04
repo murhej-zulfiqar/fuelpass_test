@@ -1,5 +1,6 @@
 package com.ucig.fuelpass.security;
 
+import com.ucig.fuelpass.exceptions.UnAuthorizedException;
 import com.ucig.fuelpass.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+/**
+ * A class to support request filtering if there is a token or not
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -72,6 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
+            throw new UnAuthorizedException("You are not authorized to access this page");
         }
     }
 }

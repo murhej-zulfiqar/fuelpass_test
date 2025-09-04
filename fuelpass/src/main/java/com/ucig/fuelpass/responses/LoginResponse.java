@@ -1,4 +1,4 @@
-package com.ucig.fuelpass.Responses;
+package com.ucig.fuelpass.responses;
 
 public class LoginResponse {
     private String token;

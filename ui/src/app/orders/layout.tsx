@@ -1,5 +1,5 @@
 import Header from "@/components/molecules/Header";
-import Container from "@mui/material/Container";
+import {Grid} from "@mui/material";
 
 
 export default function RootLayout({
@@ -10,9 +10,9 @@ export default function RootLayout({
     return (
         <main>
             <Header />
-            <Container sx={{ minHeight: "calc(100vh - 64px)", marginTop: "64px" }}>
+            <Grid container justifyContent="center" sx={{ minHeight: "calc(100vh - 64px)", marginTop: "64px", padding: "32px" }}>
                 {children}
-            </Container>
+            </Grid>
         </main>
 
     );

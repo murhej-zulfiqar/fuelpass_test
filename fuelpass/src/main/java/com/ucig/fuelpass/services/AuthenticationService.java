@@ -1,13 +1,18 @@
 package com.ucig.fuelpass.services;
 
-import com.ucig.fuelpass.Models.User;
-import com.ucig.fuelpass.Requests.LoginRequest;
+import com.ucig.fuelpass.exceptions.NotFoundException;
+import com.ucig.fuelpass.models.User;
+import com.ucig.fuelpass.requests.LoginRequest;
 import com.ucig.fuelpass.repositories.UserRepo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * A service to authenticate user
+ * I didn't add the signup functionality because I assumed the user should be added by another platform or manually using another dashboard
+ */
 @Service
 public class AuthenticationService {
     private final UserRepo userRepo;
@@ -26,15 +31,6 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-//    public User signup(RegisterUserDto input) {
-//        User user = new User()
-//                .setFullName(input.getFullName())
-//                .setEmail(input.getEmail())
-//                .setPassword(passwordEncoder.encode(input.getPassword()));
-//
-//        return userRepository.save(user);
-//    }
-
     public User authenticate(LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -44,6 +40,6 @@ public class AuthenticationService {
         );
 
         return userRepo.findByUsername(loginRequest.username())
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Wrong username or password"));
     }
 }

@@ -1,16 +1,11 @@
-package com.ucig.fuelpass.Models;
+package com.ucig.fuelpass.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
-@Data
 @Table(name = "roles")
-@NoArgsConstructor
 public class Role implements DataModel{
     @Id
     @GeneratedValue(generator = "uuid1")
@@ -43,6 +38,12 @@ public class Role implements DataModel{
         this.canonicalName = canonicalName;
     }
 
+    public Role(String name, String canonicalName) {
+        Name = name;
+        this.canonicalName = canonicalName;
+    }
 
+    public Role(){
 
+    }
 }

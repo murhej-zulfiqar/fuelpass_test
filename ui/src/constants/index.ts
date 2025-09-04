@@ -10,3 +10,9 @@ export const FieldType = {
     DATE: 'DATE',
     BOOLEAN: 'BOOLEAN',
 }
+
+// Should be replaced with api to get roles if there are more complex but this enough I think for now
+export const BasicRoles = {
+    AIRCRAFT_OPERATOR: 'AIRCRAFT_OPERATOR',
+    OPERATIONS_MANAGER: 'OPERATIONS_MANAGER',
+}

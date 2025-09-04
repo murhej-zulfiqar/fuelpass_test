@@ -1,44 +1,45 @@
-package com.ucig.fuelpass.Models;
+package com.ucig.fuelpass.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ucig.fuelpass.Enums.FieldType;
-import com.ucig.fuelpass.annotations.FormField;
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import com.ucig.fuelpass.models.User;
 
 import java.util.UUID;
 
-@Entity
-@Data
-@Table(name = "orders")
-@NoArgsConstructor
-public class Order implements DataModel{
-    @Id
-    @GeneratedValue(generator = "uuid1")
-    private UUID id;
+public class OrderDTO extends BaseDTO{
 
-    @FormField(label = "Airport ICAO", required = true, order = 1, name = "icao", validations = {"length:4"})
-    private String icao;
-    @FormField(label = "Tail Number", required = true, order = 2, name = "tailNumber")
-    private String TailNumber;
-    @FormField(label = "Requested Volume", type = FieldType.NUMBER, required = true, order = 3, name="requestedVolume", validations = {"minValue:0"})
-    private Double requestedVolume;
-    private String status;
-    @FormField(label = "Requested From", type = FieldType.DATE, required = true, order = 4, name="startDate")
-    private Long startDate;
+    UUID id;
 
-    private Long createdAt;
-    private Long updatedAt;
-    @FormField(label = "Expires At", type = FieldType.DATE, required = true, order = 5,name="endDate")
-    private Long endDate;
+     String icao;
+     String TailNumber;
+     Double requestedVolume;
+     String status;
+     Long startDate;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private User user;
-    // todo add created by  field
+     Long createdAt;
+     Long updatedAt;
+     Long endDate;
 
+     User user;
+
+    public OrderDTO(UUID id, String icao, String tailNumber, Double requestedVolume, String status, Long startDate, Long createdAt, Long updatedAt, Long endDate, User user) {
+        this.id = id;
+        this.icao = icao;
+        TailNumber = tailNumber;
+        this.requestedVolume = requestedVolume;
+        this.status = status;
+        this.startDate = startDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.endDate = endDate;
+        this.user = user;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getIcao() {
         return icao;

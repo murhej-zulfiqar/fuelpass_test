@@ -1,27 +1,27 @@
-import {useQuery} from "@tanstack/react-query";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {jwtDecode} from "jwt-decode";
+import {getTokenParts} from "@/utils/authUtil";
+import {Token} from "@/interfaces/common";
 
-
+/**
+ * A hook to check if the user logged in or not or if the token expired then redirects the user to login
+ * @param requiredRole
+ */
 export const useAuth = (requiredRole: string) => {
 
-
-    const [decodedToken, setDecodedToken] =  useState<{role: string}| null>(null)
+    const [decodedToken, setDecodedToken] =  useState<Token| null>(null)
     const router = useRouter();
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if(!token){
-            router.push("/auth/login");
-        }
-        else{
-             setDecodedToken(() => jwtDecode(token));
-             if(decodedToken !== null && decodedToken?.role !== requiredRole){
-                 router.push("/auth/login");
-                 // todo add notification
-             }
 
-        }
+       const token = getTokenParts()
+       setDecodedToken(() => token);
+       if (!token) {
+           router.push("/auth/login");
+       }
+       if (decodedToken !== null && decodedToken?.role.canonicalName !== requiredRole) {
+           router.push("/auth/login");
+       }
+
     }, [requiredRole]);
 
     return {decodedToken};

@@ -3,6 +3,7 @@ import "./globals.css";
 import ThemeProvider from "./ThemeProvider";
 import {  Roboto } from "next/font/google";
 import ReactQueryProvider from "@/QueryProvider";
+import ToastProvider from "@/app/ToastProvider";
 
 export const metadata: Metadata = {
     title: "Fuel pass app",
@@ -25,8 +26,10 @@ export default function RootLayout({
         <html lang="en" className={roboto.variable}>
             <body>
                 <ThemeProvider>
+                    {/* A wrapper to add the functionality of React Query package */}
                     <ReactQueryProvider>
                         {children}
+                        <ToastProvider />
                     </ReactQueryProvider>
                 </ThemeProvider>
             </body>

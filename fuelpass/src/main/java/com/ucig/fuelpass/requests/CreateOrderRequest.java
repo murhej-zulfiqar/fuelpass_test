@@ -1,11 +1,7 @@
-package com.ucig.fuelpass.Requests;
+package com.ucig.fuelpass.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-@Data
-@RequiredArgsConstructor
 public class CreateOrderRequest {
 
     @JsonProperty String icao;
